@@ -8,7 +8,11 @@ MODE=$1; N=${2:-8}
 T=/w/Ripple-65B-Preview; D=/w/Ripple-65B-Preview-DFlash2
 cd /opt/sglang
 git apply --check /repo/patch/dflash_copy_sglang_0.5.19.diff 2>/dev/null && git apply /repo/patch/dflash_copy_sglang_0.5.19.diff
-if [ "$MODE" = patched ]; then export SGLANG_DFLASH_COPY=1 SGLANG_DFLASH_COPY_N=$N SGLANG_DFLASH_COPY_DEBUG=1; fi
+case "$MODE" in
+  baseline) unset SGLANG_DFLASH_COPY SGLANG_DFLASH_COPY_N SGLANG_DFLASH_COPY_MAX SGLANG_DFLASH_COPY_STICKY SGLANG_DFLASH_COPY_DEBUG ;;
+  patched) export SGLANG_DFLASH_COPY=1 SGLANG_DFLASH_COPY_N=$N SGLANG_DFLASH_COPY_DEBUG=1 ;;
+  *) echo "usage: run_bench.sh baseline|patched [N]" >&2; exit 2 ;;
+esac
 cd $T/inference/server
 python serve.py --model-path $T --speculative-draft-model-path $D > /tmp/server_$MODE.log 2>&1 &
 SERVER=$!
