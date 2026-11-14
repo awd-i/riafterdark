@@ -47,7 +47,7 @@ def run(a):
         rows.append({"prompt": p, "tokens": n, "ttft_s": t_first - t0, "total_s": t1 - t0,
                      "decode_tps": (n - 1) / (t1 - t_first), "text": text})
         print(f"[{i + 1}] {n} tok  {rows[-1]['decode_tps']:.1f} tok/s  ttft {rows[-1]['ttft_s']:.2f}s")
-    json.dump(rows, open(f"{a.name}.json", "w"), indent=1)
+        json.dump(rows, open(f"{a.name}.json", "w"), indent=1)  # after every request, so a crash loses nothing
     print(f"median decode: {statistics.median(r['decode_tps'] for r in rows):.1f} tok/s -> {a.name}.json")
 
 
